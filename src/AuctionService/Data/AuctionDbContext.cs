@@ -10,5 +10,5 @@ namespace AuctionService.Data;
 
     }
     public DbSet<Auction> Auctions { get; set; } 
-    public DbSet<Item> Items { get; set; }
+   // public DbSet<Item> Items { get; set; }
  }

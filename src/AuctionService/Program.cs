@@ -1,12 +1,15 @@
 using AuctionService.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
 builder.Services.AddControllers();
+// Add DbContext
 builder.Services.AddDbContext<AuctionDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultDatabase")));    
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
 var app = builder.Build();
  
@@ -16,7 +19,14 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 app.MapControllers(); 
-
+try
+{
+    DbInitializer.InitDb(app);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"An error occurred during database initialization: {ex.Message}");
+}   
 app.Run();
 
  
