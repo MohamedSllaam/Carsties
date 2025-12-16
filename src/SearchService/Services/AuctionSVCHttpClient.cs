@@ -1,3 +1,5 @@
+using MongoDB.Entities;
+
 namespace SearchService.Services
 {
     public class AuctionSVCHttpClient
@@ -12,5 +14,23 @@ namespace SearchService.Services
    _httpClient = httpClient;
             
         }
+
+        public async Task<List<Item>> GetAuctionsAsync()
+        {
+            var lastUpdated= await DB.Find<Item,string>()
+            .Sort(x=> x.Descending(a=> a.UpdatedAt))
+            .Project(x=> x.UpdatedAt.ToString("o"))
+            .ExecuteFirstAsync();
+
+            var auctionServiceUrl = _configuration.GetValue<string>("AuctionServiceUrl");
+            var requestUrl = string.IsNullOrEmpty(lastUpdated) 
+                ? $"{auctionServiceUrl}/api/auctions" 
+                : $"{auctionServiceUrl}/api/auctions?date={Uri.EscapeDataString(lastUpdated)}";
+
+         return await _httpClient.GetFromJsonAsync<List<Item>>(requestUrl);
+           
+
+            
+        }   
     }
 }

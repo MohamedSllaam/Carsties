@@ -1,10 +1,12 @@
 
 using SearchService.Data;
+using SearchService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
  
 
 builder.Services.AddControllers();
+builder.Services.AddHttpClient<AuctionSVCHttpClient>();
 
 var app = builder.Build();
 
@@ -18,7 +20,7 @@ app.MapControllers();
 // Initialize MongoDB.Entities DB
 try
 {
-await builder.InitializeAsync(); 
+await app.InitializeAsync(); 
 Console.WriteLine("Database initialized successfully.");
 }
 catch (Exception ex)
