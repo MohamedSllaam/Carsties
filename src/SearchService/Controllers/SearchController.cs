@@ -1,3 +1,4 @@
+using System.Data;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Entities;
@@ -10,18 +11,48 @@ namespace SearchService.Controllers;
     {
 
         [HttpGet]
-        public async Task<IActionResult> SearchItems([FromQuery] string searchTerm)
+        public async Task<IActionResult> SearchItems([FromQuery]SearchParams searchParams  )
         {
-             var query = DB.Find<Item>();
+             var query = DB.PagedSearch<Item, Item>();
              query.Sort(x => x.Ascending(a=>a.Make));
-             if(!string.IsNullOrEmpty(searchTerm))
-        {
-          query.Match(Search.Full , searchTerm).SortByTextScore();  
-          
-  }
-             var results = await query.ExecuteAsync(); 
+             if(!string.IsNullOrEmpty(searchParams.SearchTerm))
+                {
+                query.Match(Search.Full ,searchParams.SearchTerm).SortByTextScore();  
+                }
+             query.PageNumber( searchParams.PageNumber);
+             query.PageSize(searchParams.PageSize);
+             
+             
+             query= searchParams.FilterBy switch
+                   {
+                    "finished" => query.Match(x => x.AuctionEnd > DateTime.UtcNow),
+                    "endingSoon" => query.Match(x => x.AuctionEnd <= DateTime.UtcNow.AddHours(6)),                   
+                    _ => query.Match(x => x.AuctionEnd > DateTime.UtcNow)
+                   };
 
-               return Ok(results);
+              if(!string.IsNullOrEmpty( searchParams.Seller))
+               {
+                query.Match(x => x.Seller ==  searchParams.Seller);
+               }   
+
+              if(!string.IsNullOrEmpty( searchParams.Winner))
+                {
+                query.Match(x => x.Winner ==  searchParams.Winner);
+                }
+
+             query= searchParams.OrderBy switch
+                   {
+                    "make" => query.Sort(x => x.Ascending(a => a.Make)),
+                    "new" => query.Sort(x => x.Descending(a => a.CreatedAt)),
+                    _ => query.Sort(x => x.Ascending( a=>a.AuctionEnd)),
+                   };
+             var result = await query.ExecuteAsync(); 
+
+               return Ok(new{
+                results = result.Results,
+                pageCount = result.PageCount,
+                totalCount = result.TotalCount
+               });
         }
         
     }

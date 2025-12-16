@@ -1,7 +1,9 @@
+using System.Linq;
 using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,15 +23,29 @@ namespace AuctionService.Controllers;
      }
 
     [HttpGet]
-    public async Task<IActionResult> GetAuctions()
+    public async Task<IActionResult> GetAuctions(string date)
     {
+        var query = _auctionDbContext.Auctions.OrderBy(x=> x.Item.Make).AsQueryable();
+
+        if(!string.IsNullOrEmpty(date))
+        {
+            query =query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime())>= 0);
+
+        }
+
+
         var auctions = await _auctionDbContext.Auctions
         .Include(a => a.Item)
         .OrderBy(a => a.Item.Make)
         .ToListAsync();
+       
 
-        var auctionDtos = _mapper.Map<List<AuctionDto>>(auctions);
-        return Ok(auctionDtos);
+        // var auctionDtos = _mapper.Map<List<AuctionDto>>(auctions);
+
+        return  await query.ProjectTo<AuctionDto>(_mapper.ConfigurationProvider).ToListAsync()
+            is List<AuctionDto> auctionDtos
+            ? Ok(auctionDtos)
+            : StatusCode(500, "An error occurred while retrieving auctions.");
     } 
 
     [HttpGet("{id}")]
