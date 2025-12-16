@@ -1,4 +1,6 @@
 
+using Polly;
+using Polly.Extensions.Http;
 using SearchService.Data;
 using SearchService.Services;
 
@@ -6,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
  
 
 builder.Services.AddControllers();
-builder.Services.AddHttpClient<AuctionSVCHttpClient>();
+builder.Services.AddHttpClient<AuctionSVCHttpClient>().AddPolicyHandler(GetPolicy());
 
 var app = builder.Build();
 
@@ -18,14 +20,23 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers(); 
 // Initialize MongoDB.Entities DB
-try
+app.Lifetime.ApplicationStarted.Register(async () =>
 {
-await app.InitializeAsync(); 
-Console.WriteLine("Database initialized successfully.");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"Error initializing database: {ex.Message}");
-     
-}
+    try
+    {
+        await app.InitializeAsync(); 
+        Console.WriteLine("Database initialized successfully.");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Error initializing database: {ex.Message}");
+    }
+});
+
 app.Run();
+static IAsyncPolicy<HttpResponseMessage> GetPolicy()
+=>
+     HttpPolicyExtensions.
+        HandleTransientHttpError()
+        .OrResult(msg => msg.StatusCode == System.Net.HttpStatusCode.NotFound)
+        .WaitAndRetryAsync(3, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)));
