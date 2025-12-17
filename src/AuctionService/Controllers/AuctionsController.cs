@@ -25,8 +25,12 @@ namespace AuctionService.Controllers;
     [HttpGet]
     public async Task<IActionResult> GetAuctions(string date)
     {
+
         var query = _auctionDbContext.Auctions.OrderBy(x=> x.Item.Make).AsQueryable();
 
+     if (!string.IsNullOrWhiteSpace(date) && !DateTime.TryParse(date, out var dt))
+        return BadRequest("Invalid date format. Use yyyy-MM-dd.");
+     
         if(!string.IsNullOrEmpty(date))
         {
             query =query.Where(x => x.UpdatedAt.CompareTo(DateTime.Parse(date).ToUniversalTime())>= 0);
