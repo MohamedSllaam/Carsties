@@ -4,6 +4,8 @@ using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
+using Contracts;
+using MassTransit;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,9 +17,14 @@ namespace AuctionService.Controllers;
  {
   private readonly IMapper _mapper;
  private readonly AuctionDbContext _auctionDbContext;
+  private readonly IPublishEndpoint _publishEndpoint;
 
- public AuctionsController(IMapper mapper,AuctionDbContext auctionDbContext )
+ public AuctionsController(IMapper mapper,
+ AuctionDbContext auctionDbContext,
+   IPublishEndpoint publishEndpoint
+  )
      {  
+   _publishEndpoint = publishEndpoint;
          _mapper = mapper;
          _auctionDbContext = auctionDbContext;
      }
@@ -77,11 +84,18 @@ namespace AuctionService.Controllers;
         auction.Seller="TestSeller"; // Placeholder, replace with actual seller info
 
         await _auctionDbContext.Auctions.AddAsync(auction);
+
+        var auctionCreatedEvent = _mapper.Map<AuctioCreated>(auction);
+        await _publishEndpoint.Publish(auctionCreatedEvent);
+
+
         var result=  await _auctionDbContext.SaveChangesAsync();
+       
         if(result<=0)
         {
             return StatusCode(500, "An error occurred while creating the auction.");
         }
+        
         var auctionDto = _mapper.Map<AuctionDto>(auction);
         return CreatedAtAction(nameof(GetAuctionById),
          new { id = auction.Id }, auctionDto);
