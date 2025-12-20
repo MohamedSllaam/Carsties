@@ -17,6 +17,8 @@ public class MappingProfiles : Profile
 
         CreateMap<AuctioCreated, Auction>().ReverseMap();
 
+        CreateMap<Auction, AuctionUpdated>().IncludeMembers(x => x.Item);
+        CreateMap<Item, AuctionUpdated>().ReverseMap(); 
 
     }
 }

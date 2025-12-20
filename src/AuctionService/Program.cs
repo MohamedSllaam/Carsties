@@ -1,3 +1,4 @@
+using AuctionService;
 using AuctionService.Data;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
@@ -21,6 +22,10 @@ builder.Services.AddMassTransit(x =>
        //o.MessageLifetime = TimeSpan.FromDays(1);
        o.UseBusOutbox();
    });
+    
+    x.AddConsumersFromNamespaceContaining<AuctionCreatedFaultConsumer>();
+    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
+     
 
    x.UsingRabbitMq((context, cfg) => 
    {

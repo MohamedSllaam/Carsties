@@ -119,7 +119,10 @@ namespace AuctionService.Controllers;
         existingAuction.Item.Year = updateAuctionDto.Year ?? existingAuction.Item.Year ;  
         existingAuction.Item.Color = updateAuctionDto.Color ?? existingAuction.Item.Color ;
         existingAuction.Item.Mileage = updateAuctionDto.Mileage ?? existingAuction.Item.Mileage ;
+       
 
+        var auctionUpdatedEvent = _mapper.Map<AuctionUpdated>(existingAuction);
+        await _publishEndpoint.Publish(auctionUpdatedEvent);
 
         var result = await _auctionDbContext.SaveChangesAsync();
         if (result <= 0)
@@ -142,6 +145,9 @@ namespace AuctionService.Controllers;
         }
 
         _auctionDbContext.Auctions.Remove(existingAuction);
+
+        await _publishEndpoint.Publish(new AuctionDeleted { Id = existingAuction.Id.ToString() });
+
         var result = await _auctionDbContext.SaveChangesAsync();
         if (result <= 0)
         {

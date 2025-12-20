@@ -17,6 +17,8 @@ namespace SearchService.Consumer;
             var auctionCreated = context.Message;
             var item = _mapper.Map<Item>(auctionCreated);
             // Logic to index the item in the search service goes here
+           if(item.Model == "Foo")
+           throw new ArgumentException("Cannot Sell cars with Name Foo");
             return Task.CompletedTask;     
         }
     }
