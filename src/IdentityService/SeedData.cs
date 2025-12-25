@@ -35,9 +35,7 @@ public class SeedData
 
                 result = userMgr.AddClaimsAsync(alice, new Claim[]{
                             new Claim(JwtClaimTypes.Name, "Alice Smith"),
-                            new Claim(JwtClaimTypes.GivenName, "Alice"),
-                            new Claim(JwtClaimTypes.FamilyName, "Smith"),
-                            new Claim(JwtClaimTypes.WebSite, "http://alice.example.com"),
+
                         }).Result;
                 if (!result.Succeeded)
                 {
