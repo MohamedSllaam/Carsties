@@ -75,8 +75,13 @@ internal static class HostingExtensions
             .AddInMemoryIdentityResources(Config.IdentityResources)
             .AddInMemoryApiScopes(Config.ApiScopes)
             .AddInMemoryClients(Config.Clients)
-            .AddAspNetIdentity<ApplicationUser>()
-            .AddLicenseSummary();
+            .AddAspNetIdentity<ApplicationUser>();
+           // .AddLicenseSummary();
+
+           builder.Services.ConfigureApplicationCookie(options =>
+           {
+             options.Cookie.SameSite = SameSiteMode.Lax;
+           });  
 
         builder.Services.AddAuthentication()
             .AddOpenIdConnect("oidc", "Sign-in with demo.duendesoftware.com", options =>
