@@ -11,8 +11,8 @@ namespace IdentityService.Pages.Account.Register;
         [Required]
         public string Username { get; set;}
         [Required]
-        public string Fullname { get;}
-        public string ReturnUrl { get;}
-        public string Button { get;}
+        public string FullName { get;set;}
+        public string ReturnUrl { get;set;}
+        public string Button { get;set;}
 }
 

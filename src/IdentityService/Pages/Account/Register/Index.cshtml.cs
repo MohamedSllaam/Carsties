@@ -1,4 +1,9 @@
+using System.Security.Claims;
+using Duende.IdentityModel;
+using IdentityService.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace IdentityService.Pages.Account.Register;
@@ -9,7 +14,7 @@ namespace IdentityService.Pages.Account.Register;
     {
  private readonly UserManager<ApplicationUser> _usermanager;
 
- public IndexModel(Usermanager<ApplicationUser> usermanager)
+ public IndexModel(UserManager<ApplicationUser> usermanager)
     {
     _usermanager = usermanager;
     }
@@ -41,14 +46,14 @@ namespace IdentityService.Pages.Account.Register;
              { 
                  UserName = Input.Username, 
                  Email = Input.Email,
-                 Fullname = Input.Fullname,
+                 FullName = Input.FullName,
                  EmailConfirmed = true
              };
              var result = await _usermanager.CreateAsync(user, Input.Password);
              if (result.Succeeded)
              {
                 await _usermanager.AddClaimAsync(user, 
-                new Claim( JwtClaimTypes.Name, Input.Fullname ?? ""));
+                new Claim( JwtClaimTypes.Name, Input.FullName ?? ""));
                  RegisterSuccess = true;
                 
              }
