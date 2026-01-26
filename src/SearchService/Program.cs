@@ -15,23 +15,24 @@ builder.Services.AddAutoMapper(typeof(Program));
 builder.Services.AddMassTransit(x =>
 {
     x.AddConsumersFromNamespaceContaining<AuctionCreatedConsumer>();
-    x.SetEndpointNameFormatter(new KebabCaseEndpointNameFormatter("search", false));
-     
-     x.UsingRabbitMq((context, cfg) =>
-     {
-       cfg.ReceiveEndpoint("search-auction-created", e =>
-       {
-            e.UseMessageRetry(r=> r.Interval(3,5));
-            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
-       });  
-        
-     });
-    
-    x.UsingRabbitMq((context, cfg) => 
+
+    x.SetEndpointNameFormatter(
+        new KebabCaseEndpointNameFormatter("search", false)
+    );
+
+    x.UsingRabbitMq((context, cfg) =>
     {
-            cfg.ConfigureEndpoints(context);
+        cfg.ReceiveEndpoint("search-auction-created", e =>
+        {
+            e.UseMessageRetry(r => r.Interval(3, 5));
+            e.ConfigureConsumer<AuctionCreatedConsumer>(context);
+        });
+
+ // UsingRabbitMq
+        cfg.ConfigureEndpoints(context);
     });
 });
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
