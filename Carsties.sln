@@ -1,3 +1,4 @@
+﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
@@ -11,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Contracts", "src\Contracts\Contracts.csproj", "{27E7A5AD-B5FB-4273-9440-CD500F3B9691}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IdentityService", "src\IdentityService\IdentityService.csproj", "{D120B17B-4DD7-4638-BE9E-1914CAD12FA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GatewayService", "src\GatewayService\GatewayService.csproj", "{712ABF88-2806-45BC-BAB6-4813196088C8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -70,6 +73,18 @@ Global
 		{D120B17B-4DD7-4638-BE9E-1914CAD12FA9}.Release|x64.Build.0 = Release|Any CPU
 		{D120B17B-4DD7-4638-BE9E-1914CAD12FA9}.Release|x86.ActiveCfg = Release|Any CPU
 		{D120B17B-4DD7-4638-BE9E-1914CAD12FA9}.Release|x86.Build.0 = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|x64.Build.0 = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Debug|x86.Build.0 = Debug|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|x64.ActiveCfg = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|x64.Build.0 = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|x86.ActiveCfg = Release|Any CPU
+		{712ABF88-2806-45BC-BAB6-4813196088C8}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -79,5 +94,6 @@ Global
 		{FFBAE7B7-9200-482A-AB91-F24A163AF145} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{27E7A5AD-B5FB-4273-9440-CD500F3B9691} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{D120B17B-4DD7-4638-BE9E-1914CAD12FA9} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
+		{712ABF88-2806-45BC-BAB6-4813196088C8} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 	EndGlobalSection
 EndGlobal
